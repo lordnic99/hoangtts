@@ -8,6 +8,7 @@ import sys
 import time
 import warnings
 import zipfile
+import shutil
 
 from bs4 import BeautifulSoup
 from ebooklib import epub
@@ -762,7 +763,33 @@ class EpubToAudiobook:
             os.remove(self.ffmetadatafile)
             for f in files:
                 os.remove(f)
+        try:
+            print("start backup to google drive")
+            shutil.copy(self.output_filename, "/content/drive/MyDrive")
+        except:
+            pass
         print(self.output_filename + " complete")
+
+
+def copy_file_to_folder(src_file, dst_folder):
+    if not os.path.isfile(src_file):
+        raise FileNotFoundError(f"The source file {src_file} does not exist.")
+    
+    if not os.path.isdir(dst_folder):
+        os.makedirs(dst_folder)
+
+    base_name = os.path.basename(src_file)
+    dst_file = os.path.join(dst_folder, base_name)
+
+    # If the file already exists, rename it
+    counter = 1
+    while os.path.exists(dst_file):
+        name, ext = os.path.splitext(base_name)
+        dst_file = os.path.join(dst_folder, f"{name}_{counter}{ext}")
+        counter += 1
+
+    shutil.copy2(src_file, dst_file)
+    print(f"File copied to {dst_file}")
 
 
 def main():
