@@ -699,8 +699,8 @@ class EpubToAudiobook:
 
         for i in self.audioformat:
             if i == "wav":
-                outputm4a = outputm4a.replace(".m4a", "_without_metadata.wav")
-                self.output_filename = self.output_filename.replace(".m4b", ".wav")
+                outputm4a = outputm4a.replace(".m4a", ".wav")
+                self.output_filename = outputm4a
                 ffmpeg_command = [
                     "ffmpeg",
                     "-f",
@@ -712,8 +712,8 @@ class EpubToAudiobook:
                     outputm4a,
                 ]
             elif i == "flac":
-                outputm4a = outputm4a.replace(".m4a", "_without_metadata.flac")
-                self.output_filename = self.output_filename.replace(".m4b", ".flac")
+                outputm4a = outputm4a.replace(".m4a", ".flac")
+                self.output_filename = outputm4a
                 ffmpeg_command = [
                     "ffmpeg",
                     "-f",
@@ -742,27 +742,27 @@ class EpubToAudiobook:
                     outputm4a,
                 ]
             subprocess.run(ffmpeg_command)
-            self.generate_metadata(files)
-            ffmpeg_command = [
-                "ffmpeg",
-                "-i",
-                outputm4a,
-                "-i",
-                self.ffmetadatafile,
-                "-map_metadata",
-                "1",
-                "-codec",
-                "copy",
-                self.output_filename,
-            ]
-            subprocess.run(ffmpeg_command)
-            if not self.debug: # Leave the files if debugging
-                os.remove(outputm4a)
-        if not self.debug: # Leave the files if debugging
-            os.remove(filelist)
-            os.remove(self.ffmetadatafile)
-            for f in files:
-                os.remove(f)
+        #     self.generate_metadata(files)
+        #     ffmpeg_command = [
+        #         "ffmpeg",
+        #         "-i",
+        #         outputm4a,
+        #         "-i",
+        #         self.ffmetadatafile,
+        #         "-map_metadata",
+        #         "1",
+        #         "-codec",
+        #         "copy",
+        #         self.output_filename,
+        #     ]
+        #     subprocess.run(ffmpeg_command)
+        #     if not self.debug: # Leave the files if debugging
+        #         os.remove(outputm4a)
+        # if not self.debug: # Leave the files if debugging
+        #     os.remove(filelist)
+        #     os.remove(self.ffmetadatafile)
+        #     for f in files:
+        #         os.remove(f)
         try:
             print("start backup to google drive")
             shutil.copy(self.output_filename, "/content/drive/MyDrive")
@@ -881,7 +881,7 @@ def main():
     parser.add_argument(
         "--audioformat", 
         type=str,
-        default="m4b",
+        default="wav",
         help="One or multiple audio format separate by comma for the output file (m4b [default], wav, flac)"
     )
     parser.add_argument(
